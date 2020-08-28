@@ -48,7 +48,7 @@ $preference = $mp->create_preference($preference_data);
 		<input type="text" name="nombre" required><br><br>
 		<label>D.N.I.:</label>
 		<input type="text" name="dni" required><br><br>
-		<label>TelÈfono:</label>
+		<label>Tel√©fono:</label>
 		<input type="tel" name="telefono" required><br><br>
 		<label>Email:</label>
 		<input type="email" name="email" required><br><br>
@@ -62,7 +62,7 @@ $preference = $mp->create_preference($preference_data);
 		</div>
 		<br>
 		<div class="divo">
-			<p>Usted abonar· el monto de $ <?php echo FormatoPrecio($_POST['monto']);?> por la reserva de una habitaciÛn <?php echo TraeTipo($_POST['thabitacion']);?> para ser ocupada desde el <?php echo ArreglaFechaMostrar($_POST['fentrada']);?> hasta el <?php echo ArreglaFechaMostrar($_POST['fsalida']);?></p>
+			<p>Usted abonar√° el monto de $ <?php echo FormatoPrecio($_POST['monto']);?> por la reserva de una habitaci√≥n <?php echo TraeTipo($_POST['thabitacion']);?> para ser ocupada desde el <?php echo ArreglaFechaMostrar($_POST['fentrada']);?> hasta el <?php echo ArreglaFechaMostrar($_POST['fsalida']);?></p>
 			<p><b>Si decea abonar con transferencia bancaria, pongace en contacto con nosotros.</b></p><br>
 			<br><p><input type="checkbox" id="aceptar" onclick="Habilitar('idb', 'aceptar');"> Aceptar <a class="link"onclick="MostrarT('block');">terminos y condiciones</a>.</p>
 			<br><br><br><center><span class="lightblue-rn-m-tr" id="idb"><a href="<?php echo $preference["response"]["init_point"]; ?>" name="MP-Checkout" disabled>Abonar con MercadoPago</a></span></center>
@@ -124,12 +124,12 @@ include(DIR_INCLUDES . "footer.php");
 		}
 		if(res1 && res2 && res3)
 		{
-			document.getElementById("mensaje").innerHTML = "<h5>La informaciÛn se envio correctamente, solo falta abonar la reserva</h5>";
+			document.getElementById("mensaje").innerHTML = "<h5>La informaci√≥n se envio correctamente, solo falta abonar la reserva</h5>";
 			document.getElementById("miForm").reset();
 			document.getElementById("miForm").style.display = "none";
 			/*var url = "fpagar-reservas.php?idr=" + res1;
 			var req = new ajaxRequest();
-			req.open("POST", url, false)
+			req.open("GET", url, false)
 			req.send(null);*/
 			$.ajax({
 				type: 'GET',
