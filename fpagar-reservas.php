@@ -5,7 +5,6 @@ require_once(DIR_INCLUDES . "mercadopago.php");
 include(DIR_INCLUDES . "header-res.php");
 $suma = number_format($_POST['monto'], 2, '.', '');
 $mp = new MP (M_CLIENT_ID, M_CLIENT_SECRET);
-
 $preference_data = array(
 	"items" => array(
 		array(
