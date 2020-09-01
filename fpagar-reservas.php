@@ -5,6 +5,7 @@ require_once(DIR_INCLUDES . "mercadopago.php");
 include(DIR_INCLUDES . "header-res.php");
 $suma = number_format($_POST['monto'], 2, '.', '');
 $mp = new MP (M_CLIENT_ID, M_CLIENT_SECRET);
+$bandera = rand(1,9999);
 $preference_data = array(
 	"items" => array(
 		array(
@@ -15,9 +16,9 @@ $preference_data = array(
 		)
 	),
 	"back_urls" => array(
-		"success" => HTTP_SERVER . "pago-ok.php?idr=" . @$_GET['idr'],
-		"failure" => HTTP_SERVER . "pagos-error.php?idr=" . @$_GET['idr'],
-		"pending" => HTTP_SERVER . "pagos-ok.php"
+		"success" => HTTP_SERVER . "pago-ok.php?bandera=" . $bandera,
+		"failure" => HTTP_SERVER . "pagos-error.php?bandera=" . $bandera,
+		"pending" => HTTP_SERVER . "pagos-pendiente.php?bandera=" . $bandera
 	),
 	"auto_return" => "all",
 	"payment_methods" => array(
@@ -33,7 +34,7 @@ $preference = $mp->create_preference($preference_data);
 
 ?>
 <section>
-<h1>Reservas</h1>
+<h1><?php echo TraducirTexto("Reservas", $_SESSION['leng']);?></h1>
 <reservas>
 	<form id="miForm" onsubmit="return ProcesarReserva(this);">
 		<input type="hidden" name="pasajeros" value="<?php echo $_POST['pasajeros'];?>">
@@ -41,19 +42,20 @@ $preference = $mp->create_preference($preference_data);
 		<input type="hidden" name="monto" value="<?php echo $suma;?>">
 		<input type="hidden" name="fentrada" value="<?php echo $entrada;?>">
 		<input type="hidden" name="fsalida" value="<?php echo $salida;?>">
-		<label>Apellidos:</label>
+		<input type="hidden" name="bandera" value="<?php echo $bandera;?>">
+		<label><?php echo TraducirTexto("Apellido", $_SESSION['leng']);?>:</label>
 		<input type="text" name="apellido" required><br><br>
-		<label>Nombre:</label>
+		<label><?php echo TraducirTexto("Nombre", $_SESSION['leng']);?>:</label>
 		<input type="text" name="nombre" required><br><br>
-		<label>D.N.I.:</label>
+		<label><?php echo TraducirTexto("Documento", $_SESSION['leng']);?>:</label>
 		<input type="text" name="dni" required><br><br>
-		<label>Teléfono:</label>
+		<label><?php echo TraducirTexto("Teléfono", $_SESSION['leng']);?>:</label>
 		<input type="tel" name="telefono" required><br><br>
-		<label>Email:</label>
+		<label><?php echo TraducirTexto("Email", $_SESSION['leng']);?>:</label>
 		<input type="email" name="email" required><br><br>
-		<label>Datos Extras:</label>
+		<label><?php echo TraducirTexto("Datos Extras", $_SESSION['leng']);?>:</label>
 		<textarea name="dextra"></textarea><br><br>
-		<center><button type="submit">Enviar datos</button></center>
+		<center><button type="submit"><?php echo TraducirTexto2("Enviar datos", "es", $_SESSION['leng']);?></button></center>
 	</form>
 	
 	<div id="pago" class="pago">
@@ -61,10 +63,10 @@ $preference = $mp->create_preference($preference_data);
 		</div>
 		<br>
 		<div class="divo">
-			<p>Usted abonará el monto de $ <?php echo FormatoPrecio($_POST['monto']);?> por la reserva de una habitación <?php echo TraeTipo($_POST['thabitacion']);?> para ser ocupada desde el <?php echo ArreglaFechaMostrar($_POST['fentrada']);?> hasta el <?php echo ArreglaFechaMostrar($_POST['fsalida']);?></p>
-			<p><b>Si decea abonar con transferencia bancaria, pongace en contacto con nosotros.</b></p><br>
-			<br><p><input type="checkbox" id="aceptar" onclick="Habilitar('idb', 'aceptar');"> Aceptar <a class="link"onclick="MostrarT('block');">terminos y condiciones</a>.</p>
-			<br><br><br><center><span class="lightblue-rn-m-tr" id="idb"><a href="<?php echo $preference["response"]["init_point"]; ?>" name="MP-Checkout" disabled>Abonar con MercadoPago</a></span></center>
+			<p><?php echo TraducirTexto("Usted abonará el monto de", $_SESSION['leng']);?> $ <?php echo FormatoPrecio($_POST['monto']);?> <?php echo TraducirTexto("por la reserva de una habitación", $_SESSION['leng']) . " " . TraeTipo($_POST['thabitacion']) . " " . TraducirTexto("para ser ocupada desde el", $_SESSION['leng']) . " " . ArreglaFechaMostrar($_POST['fentrada']) . " " . TraducirTexto("hasta el", $_SESSION['leng']) . " " . ArreglaFechaMostrar($_POST['fsalida']);?></p>
+			<p><b><?php echo TraducirTexto("Si decea abonar con transferencia bancaria, pongace en contacto con nosotros.", $_SESSION['leng']);?></b></p><br>
+			<br><p><input type="checkbox" id="aceptar" onclick="Habilitar('idb', 'aceptar');"> <?php echo TraducirTexto("Aceptar", $_SESSION['leng']);?><a class="link"onclick="MostrarT('block');"> <?php echo TraducirTexto("terminos y condiciones", $_SESSION['leng']);?></a>.</p>
+			<br><br><br><center><span class="lightblue-rn-m-tr" id="idb"><a href="<?php echo $preference["response"]["init_point"]; ?>" name="MP-Checkout"><?php echo TraducirTexto("Abonar con", $_SESSION['leng']);?> MercadoPago</a></span></center>
 			<script type="text/javascript" src="//resources.mlstatic.com/mptools/render.js"></script>
 		</div>
 		<img src="imagenes/mercadopago.jpg" alt="<?php echo ALT;?>">
@@ -87,7 +89,7 @@ $preference = $mp->create_preference($preference_data);
 <?php
 include(DIR_INCLUDES . "footer.php");
 ?>
-<script>
+<script type="text/javascript">
 	function ProcesarReserva(form)
 	{
 		var pasajeros = form.pasajeros.value;
@@ -101,9 +103,10 @@ include(DIR_INCLUDES . "footer.php");
 		var telefono = form.telefono.value;
 		var email = form.email.value;
 		var texto = form.dextra.value;
+		var bandera = form.bandera.value;
 		var urlMysqlwsphp = "includes/ajax.php";
 		var req = new ajaxRequest();
-		var url = urlMysqlwsphp + "?op=1&pasajeros=" + pasajeros + "&thabitacion=" + thabitacion + "&monto=" + monto + "&fentrada=" + fentrada + "&fsalida=" + fsalida + "&apellido=" + apellido + "&nombre=" + nombre + "&dni=" + dni + "&telefono=" + telefono + "&email=" + email + "&texto=" + texto + "&tiempo=" + new Date().getTime();
+		var url = urlMysqlwsphp + "?op=1&bandera=" + bandera + "&pasajeros=" + pasajeros + "&thabitacion=" + thabitacion + "&monto=" + monto + "&fentrada=" + fentrada + "&fsalida=" + fsalida + "&apellido=" + apellido + "&nombre=" + nombre + "&dni=" + dni + "&telefono=" + telefono + "&email=" + email + "&texto=" + texto + "&tiempo=" + new Date().getTime();
 		req.open("GET", url, false)
 		req.send(null);
 		var res1 = req.responseText;
@@ -123,22 +126,9 @@ include(DIR_INCLUDES . "footer.php");
 		}
 		if(res1 && res2 && res3)
 		{
-			document.getElementById("mensaje").innerHTML = "<h5>La información se envio correctamente, solo falta abonar la reserva</h5>";
 			document.getElementById("miForm").reset();
-			document.getElementById("miForm").style.display = "none";
-			/*var url = "fpagar-reservas.php?idr=" + res1;
-			var req = new ajaxRequest();
-			req.open("GET", url, false)
-			req.send(null);*/
-			$.ajax({
-				type: 'GET',
-				url: 'fpagar-reservas.php',
-				dataType: 'html',
-				data: {'idr':res1},
-				success: function(data) {
-				 console.log('datos enviados a php correctamente!' + data);
-			  }
-			 });
+			document.getElementById("mensaje").innerHTML = "<h5><?php echo TraducirTexto('La información se envio correctamente, solo falta abonar la reserva', $_SESSION['leng']);?></h5>";
+			document.getElementById("miForm").style.display = "none";			
 		}
 		document.getElementById("pago").style.display = "block";
 		return false;
@@ -177,4 +167,5 @@ include(DIR_INCLUDES . "footer.php");
 	{
 		document.getElementById('terminos').style.display = m;
 	}
+
 </script>
